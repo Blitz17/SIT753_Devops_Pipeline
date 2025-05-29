@@ -8,4 +8,9 @@ pipeline {
       }
     }
   }
+  stage('Build') {
+    steps {
+        sh 'docker build -t myapp:latest .'
+    }
+  }
 }
