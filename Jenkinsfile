@@ -2,8 +2,8 @@ pipeline {
   agent any
 
   environment {
-    SONAR_TOKEN = credentials('sonar-token')              // SonarCloud Token (Secret Text)
-    SNYK_TOKEN = credentials('snyk-token')                // Snyk Token (Secret Text)
+    SONAR_TOKEN = credentials('sonar-token')      // SonarCloud Token (Secret Text)
+    SNYK_TOKEN = credentials('snyk-token')        // Snyk Token (Secret Text)
   }
 
   stages {
@@ -17,6 +17,12 @@ pipeline {
     stage('Checkout') {
       steps {
         git url: 'https://github.com/Blitz17/SIT753_Devops_Pipeline.git', branch: 'master'
+      }
+    }
+
+    stage('Build') {
+      steps {
+        sh 'docker build -t myapp:latest .'
       }
     }
 
@@ -59,7 +65,6 @@ pipeline {
     stage('Deploy to EC2') {
       steps {
         sshagent (credentials: ['ec2-key']) {
-          // Rsync source code to EC2 app folder, then ssh in to build & run
           sh '''
             rsync -r --delete -e "ssh -o StrictHostKeyChecking=no" ./ ec2-user@<EC2_PUBLIC_IP>:/home/ec2-user/app/
             ssh -o StrictHostKeyChecking=no ec2-user@<EC2_PUBLIC_IP> << EOF
@@ -77,7 +82,7 @@ pipeline {
 
     stage('Release') {
       steps {
-        echo 'Release step: In real-world, tag and push image or deploy to production.'
+        echo 'Tagging release and pushing tags to repo'
         sh '''
           git tag -a v1.0.$BUILD_NUMBER -m "Release version v1.0.$BUILD_NUMBER"
           git push origin --tags
@@ -85,5 +90,15 @@ pipeline {
       }
     }
 
+    stage('Monitoring') {
+      steps {
+        echo 'Running Monitoring checks'
+        sh '''
+          curl -X GET https://api.uptimerobot.com/v2/getMonitors \
+          -H 'Content-Type: application/x-www-form-urlencoded' \
+          -d 'api_key=YOUR_UPTIMEROBOT_API_KEY&format=json'
+        '''
+      }
+    }
   }
 }
