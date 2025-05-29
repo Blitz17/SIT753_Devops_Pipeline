@@ -38,7 +38,7 @@ pipeline {
       steps {
         withEnv(["SONAR_TOKEN=${SONAR_TOKEN}"]) {
           sh '''
-            npm install -g sonar-scanner
+            npm install sonar-scanner
             sonar-scanner \
               -Dsonar.projectKey=Blitz17_SIT753_Devops_Pipeline \
               -Dsonar.organization=blitz17 \
