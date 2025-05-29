@@ -41,6 +41,7 @@ pipeline {
         sh 'npm test'
 
         junit 'test-results.xml'
+        sh 'cat test-results.xml'
       }
     }
 
@@ -74,7 +75,7 @@ pipeline {
           def snykJson = readJSON text: snykReport
           def vulns = snykJson.vulnerabilities.findAll { it.severity == 'high' || it.severity == 'critical' }
           if (vulns.size() > 0) {
-            error("High or Critical vulnerabilities found: ${vulns.size()}")
+              error("High or Critical vulnerabilities found: ${vulns.size()}")
           }
         }
         archiveArtifacts 'snyk-report.json'
