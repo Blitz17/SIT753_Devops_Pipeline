@@ -1,6 +1,8 @@
 pipeline {
   agent any
-
+  triggers {
+    pollSCM('H/15 * * * *')
+  }
   environment {
     SONAR_TOKEN = credentials('sonar-token')      // SonarCloud Token (Secret Text)
     SNYK_TOKEN = credentials('snyk_key')   
@@ -22,7 +24,12 @@ pipeline {
 
     stage('Build') {
       steps {
-        sh 'docker build -t myapp:latest .'
+        script {
+        def versionTag = "v1.0.${env.BUILD_NUMBER}"
+        sh "docker build -t myapp:${versionTag} ."
+        sh "docker tag myapp:${versionTag} myapp:latest"
+        sh "docker images"
+        }
       }
     }
 
@@ -31,6 +38,8 @@ pipeline {
         sh 'npm install'
         sh 'chmod +x ./node_modules/.bin/mocha'
         sh 'npm test'
+
+        junit 'test-results.xml'
       }
     }
 
@@ -56,9 +65,18 @@ pipeline {
           sh '''
             npm install snyk || true
             echo $SNYK_TOKEN | npx snyk auth --token
-            npx snyk test || true
+            npx snyk test --json > snyk-report.json
           '''
         }
+        script {
+          def snykReport = readFile('snyk-report.json')
+          def snykJson = readJSON text: snykReport
+          def vulns = snykJson.vulnerabilities.findAll { it.severity == 'high' || it.severity == 'critical' }
+          if (vulns.size() > 0) {
+            error("High or Critical vulnerabilities found: ${vulns.size()}")
+          }
+        }
+        archiveArtifacts 'snyk-report.json'
       }
     }
 
@@ -100,12 +118,24 @@ EOF
 
     stage('Monitoring') {
       steps {
-        echo 'Running Monitoring checks'
-        sh """
-          curl -X POST https://api.uptimerobot.com/v2/getMonitors \
-          -H 'Content-Type: application/x-www-form-urlencoded' \
-          -d 'api_key=$UPTIMEROBOT_API_KEY&format=json'
-        """
+        script {
+          def response = sh(script: """
+            curl -s -X POST https://api.uptimerobot.com/v2/getMonitors \
+              -H 'Content-Type: application/x-www-form-urlencoded' \
+              -d 'api_key=$UPTIMEROBOT_API_KEY&format=json'
+          """, returnStdout: true).trim()
+
+          def json = readJSON text: response
+          def monitors = json.monitors
+          def downMonitors = monitors.findAll { it.status != 2 } // 2 means UP
+
+          if (downMonitors.size() > 0) {
+            echo "Monitors down: ${downMonitors.collect { it.friendly_name + ' (' + it.status + ')' }}"
+            error("Some monitors are down!")
+          } else {
+            echo "All monitors are UP"
+          }
+        }
       }
     }
   }
