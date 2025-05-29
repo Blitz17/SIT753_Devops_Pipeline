@@ -3,8 +3,8 @@ pipeline {
 
   environment {
     SONAR_TOKEN = credentials('sonar-token')      // SonarCloud Token (Secret Text)
-    SNYK_TOKEN = credentials('snyk_key')        // Snyk Token (Secret Text)
-  }
+    SNYK_TOKEN = credentials('snyk_key')   
+    UPTIMEROBOT_API_KEY = credentials('uptimeorobot-key')   
 
   stages {
 
@@ -87,10 +87,14 @@ pipeline {
     stage('Release') {
       steps {
         echo 'Tagging release and pushing tags to repo'
-        sh '''
-          git tag -a v1.0.$BUILD_NUMBER -m "Release version v1.0.$BUILD_NUMBER"
-          git push origin --tags
-        '''
+        withCredentials([usernamePassword(credentialsId: '8d110a95-a681-40b0-817a-b2f47770c79d', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+          sh '''
+            git config --global user.email "you@example.com"
+            git config --global user.name "Your Name"
+            git tag -a v1.0.$BUILD_NUMBER -m "Release version v1.0.$BUILD_NUMBER"
+            git push https://$GIT_USER:$GIT_PASS@github.com/Blitz17/SIT753_Devops_Pipeline.git --tags
+          '''
+        }
       }
     }
 
@@ -98,9 +102,9 @@ pipeline {
       steps {
         echo 'Running Monitoring checks'
         sh '''
-          curl -X GET https://api.uptimerobot.com/v2/getMonitors \
+          curl -X POST https://api.uptimerobot.com/v2/getMonitors \
           -H 'Content-Type: application/x-www-form-urlencoded' \
-          -d 'api_key=YOUR_UPTIMEROBOT_API_KEY&format=json'
+          -d 'api_key=$UPTIMEROBOT_API_KEY&format=json'
         '''
       }
     }
