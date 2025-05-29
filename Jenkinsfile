@@ -3,7 +3,7 @@ pipeline {
 
   environment {
     SONAR_TOKEN = credentials('sonar-token')      // SonarCloud Token (Secret Text)
-    SNYK_TOKEN = credentials('snyk-token')        // Snyk Token (Secret Text)
+    SNYK_TOKEN = credentials('f34f2dcb-4285-4aaa-b91b-895b55526566')        // Snyk Token (Secret Text)
   }
 
   stages {
@@ -40,8 +40,8 @@ pipeline {
           sh '''
             npm install -g sonar-scanner
             sonar-scanner \
-              -Dsonar.projectKey=blitz17_myapp \
-              -Dsonar.organization=your-org-name \
+              -Dsonar.projectKey=Blitz17_SIT753_Devops_Pipeline \
+              -Dsonar.organization=blitz17 \
               -Dsonar.sources=. \
               -Dsonar.host.url=https://sonarcloud.io \
               -Dsonar.login=$SONAR_TOKEN
