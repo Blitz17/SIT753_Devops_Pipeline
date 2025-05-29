@@ -1,4 +1,4 @@
-const chai = require('chai');
+import chai from 'chai';
 const expect = chai.expect;
 
 const calculator = require('../models/calculatorModel');
