@@ -89,8 +89,8 @@ pipeline {
         echo 'Tagging release and pushing tags to repo'
         withCredentials([usernamePassword(credentialsId: '8d110a95-a681-40b0-817a-b2f47770c79d', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
           sh '''
-            git config --global user.email "you@example.com"
-            git config --global user.name "Your Name"
+            git config --global user.email "dhanushsoma12@gmail.com"
+            git config --global user.name "Blitz17  "
             git tag -a v1.0.$BUILD_NUMBER -m "Release version v1.0.$BUILD_NUMBER"
             git push https://$GIT_USER:$GIT_PASS@github.com/Blitz17/SIT753_Devops_Pipeline.git --tags
           '''
@@ -101,11 +101,11 @@ pipeline {
     stage('Monitoring') {
       steps {
         echo 'Running Monitoring checks'
-        sh '''
+        sh """
           curl -X POST https://api.uptimerobot.com/v2/getMonitors \
           -H 'Content-Type: application/x-www-form-urlencoded' \
           -d 'api_key=$UPTIMEROBOT_API_KEY&format=json'
-        '''
+        """
       }
     }
   }
