@@ -1,7 +1,7 @@
 pipeline {
   agent any
   triggers {
-    pollSCM('H/15 * * * *')
+    pollSCM('H/30 * * * *')
   }
   environment {
     SONAR_TOKEN = credentials('sonar-token')      // SonarCloud Token (Secret Text)
