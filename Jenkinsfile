@@ -66,7 +66,7 @@ pipeline {
       steps {
         sshagent (credentials: ['ec2-key']) {
           sh '''
-            rsync -r --delete -e "ssh -o StrictHostKeyChecking=no" ./ ec2-user@54.206.94.245:/home/ec2-user/app/
+            scp -r --delete -e "ssh -o StrictHostKeyChecking=no" ./ ec2-user@54.206.94.245:/home/ec2-user/app/
             ssh -o StrictHostKeyChecking=no ec2-user@54.206.94.245 << EOF
               docker stop myapp || true
               docker rm myapp || true
