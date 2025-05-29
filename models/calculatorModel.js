@@ -35,3 +35,5 @@ export function clearHistory() {
     console.log('[MODEL] Clearing history');
     history.length = 0;
 }
+
+export default { calculate, getHistory, clearHistory };
