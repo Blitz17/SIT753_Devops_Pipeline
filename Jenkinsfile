@@ -66,20 +66,20 @@ pipeline {
       steps {
         sshagent (credentials: ['ec2-key']) {
           sh '''
-            echo "Copying files..."
-            scp -o StrictHostKeyChecking=no -r Dockerfile Dockerfile.jenkins Jenkinsfile app.js controllers models node_modules package-lock.json package.json routes test views ec2-user@54.206.94.245:/home/ec2-user/app/
+  echo "Copying files..."
+  scp -o StrictHostKeyChecking=no -r Dockerfile Dockerfile.jenkins Jenkinsfile app.js controllers models node_modules package-lock.json package.json routes test views ec2-user@54.206.94.245:/home/ec2-user/app/
 
-            echo "Running remote deployment..."
-            ssh -o StrictHostKeyChecking=no ec2-user@54.206.94.245 bash -s <<EOF
-              set -e
-              cd /home/ec2-user/app
-              docker stop myapp || true
-              docker rm myapp || true
-              docker rmi myapp:latest || true
-              docker build -t myapp:latest .
-              docker run -d -p 3000:3000 --name myapp myapp:latest
-            EOF
-          '''
+  echo "Running remote deployment..."
+  ssh -o StrictHostKeyChecking=no ec2-user@54.206.94.245 bash -s <<EOF
+    set -e
+    cd /home/ec2-user/app
+    docker stop myapp || true
+    docker rm myapp || true
+    docker rmi myapp:latest || true
+    docker build -t myapp:latest .
+    docker run -d -p 3000:3000 --name myapp myapp:latest
+EOF
+'''
         }
       }
     }
