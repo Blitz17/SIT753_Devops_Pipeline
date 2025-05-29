@@ -1,13 +1,6 @@
 pipeline {
   agent any
-
   stages {
-    stage('Init') {
-      steps {
-        checkout scm
-        echo 'Jenkinsfile detected. Pipeline started.'
-      }
-    }
     stage('Build') {
       steps {
         sh 'docker build -t myapp:latest .'
@@ -15,8 +8,8 @@ pipeline {
     }
     stage('Test') {
       steps {
-        sh 'npm install' 
-        sh 'npm test'     
+        sh 'npm install'
+        sh 'npm test'
       }
     }
   }
