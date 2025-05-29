@@ -4,6 +4,7 @@ pipeline {
   stages {
     stage('Init') {
       steps {
+        checkout scm
         echo 'Jenkinsfile detected. Pipeline started.'
       }
     }
