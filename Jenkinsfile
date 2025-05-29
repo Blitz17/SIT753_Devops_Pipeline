@@ -54,9 +54,9 @@ pipeline {
       steps {
         withEnv(["SNYK_TOKEN=${SNYK_TOKEN}"]) {
           sh '''
-            npm install -g snyk || true
-            snyk auth $SNYK_TOKEN
-            snyk test || true
+            npm install snyk || true
+            npx snyk auth $SNYK_TOKEN
+            npx snyk test || true
           '''
         }
       }
@@ -66,14 +66,14 @@ pipeline {
       steps {
         sshagent (credentials: ['ec2-key']) {
           sh '''
-            rsync -r --delete -e "ssh -o StrictHostKeyChecking=no" ./ ec2-user@<EC2_PUBLIC_IP>:/home/ec2-user/app/
-            ssh -o StrictHostKeyChecking=no ec2-user@<EC2_PUBLIC_IP> << EOF
+            rsync -r --delete -e "ssh -o StrictHostKeyChecking=no" ./ ec2-user@54.206.94.245:/home/ec2-user/app/
+            ssh -o StrictHostKeyChecking=no ec2-user@54.206.94.245 << EOF
               docker stop myapp || true
               docker rm myapp || true
               docker rmi myapp || true
               cd /home/ec2-user/app
               docker build -t myapp:latest .
-              docker run -d -p 80:3000 --name myapp myapp:latest
+              docker run -d -p 3000:3000 --name myapp myapp:latest
             EOF
           '''
         }
