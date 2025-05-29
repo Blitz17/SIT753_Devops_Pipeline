@@ -7,10 +7,9 @@ pipeline {
         echo 'Jenkinsfile detected. Pipeline started.'
       }
     }
-  }
-  stage('Build') {
-    steps {
+    stage('Build') {
+      steps {
         sh 'docker build -t myapp:latest .'
+      }
     }
-  }
 }
