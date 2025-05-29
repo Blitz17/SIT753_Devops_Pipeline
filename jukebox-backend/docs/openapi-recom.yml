@@ -1,0 +1,140 @@
+openapi: 3.0.0
+info:
+  title: JukeBox Recommendation API
+  version: 1.0.0
+  description: API for music and playlist-based song recommendations.
+
+servers:
+  - url: http://localhost:5000
+
+paths:
+  /api/recommend:
+    post:
+      summary: Get song recommendations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                songs:
+                  type: array
+                  items:
+                    type: string
+                  example: ["song1", "song2"]
+                model_type:
+                  type: string
+                  enum: [song, playlist]
+                  example: song
+      responses:
+        '200':
+          description: List of recommended songs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  recommendations:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        track_name:
+                          type: string
+                        track_id:
+                          type: string
+                        artists:
+                          type: string
+                        track_genre:
+                          type: string
+        '400':
+          description: Bad request (missing or invalid inputs)
+        '500':
+          description: Recommendation error
+
+  /api/song_details:
+    post:
+      summary: Get details for given track IDs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                track_ids:
+                  type: array
+                  items:
+                    type: string
+                  example: ["123abc", "456def"]
+      responses:
+        '200':
+          description: Song metadata
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    track_id:
+                      type: string
+                    title:
+                      type: string
+                    artist:
+                      type: string
+                    album:
+                      type: string
+                    duration:
+                      type: string
+                    image:
+                      type: string
+        '400':
+          description: No track IDs provided
+
+  /api/search_songs:
+    get:
+      summary: Search for songs by title or artist
+      parameters:
+        - in: query
+          name: q
+          required: true
+          schema:
+            type: string
+          description: Search term for song or artist
+      responses:
+        '200':
+          description: Matching songs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    songId:
+                      type: string
+                    name:
+                      type: string
+                    artists:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                    album:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        images:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              url:
+                                type: string
+                    duration_ms:
+                      type: integer

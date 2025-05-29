@@ -1,0 +1,29 @@
+getPlaylists function exported: [AsyncFunction (anonymous)]
+
+
+  Playlist Controller
+    getPlaylists
+      √ should return playlists
+    createPlaylist
+🎧 Playlist My Playlist is added by testuser
+      √ should create a new playlist, emit socket event, and return 201 with playlist
+    addSong controller
+      √ should return 404 if playlist not found
+      √ should return 404 if song not found
+      √ should return 400 if song already added
+      √ should add song, emit event, and return playlist
+    removeSong controller
+      √ should return 404 if playlist not found
+      √ should return 403 if user is not the creator
+      √ should return 403 if song is not in playlist
+      √ should remove song and emit socket event
+
+  Song Management API Test
+    √ Should return an array of songs (4031ms)
+    √ Should save new songs by name (2010ms)
+    √ Should return a single song by songId (252ms)
+    √ Should delete the specified song (238ms)
+
+
+  14 passing (7s)
+

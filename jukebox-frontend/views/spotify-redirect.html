@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Logging in with Spotify...</title>
+  <style>
+    body {
+      background: #0f0f0f;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 10%;
+    }
+    .spinner {
+      margin-top: 20px;
+      border: 6px solid #444;
+      border-top: 6px solid #1db954;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <h2>Logging you in with Spotify...</h2>
+  <div class="spinner"></div>
+
+  <script>
+    const token = new URLSearchParams(window.location.search).get("token");
+
+    if (token) {
+      localStorage.setItem("token", token);
+
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        sessionStorage.setItem("userId", payload.id);
+        sessionStorage.setItem("userEmail", payload.email || "");
+        sessionStorage.setItem("userRole", payload.role || "");
+        sessionStorage.setItem("userDOB", payload.dateOfBirth || "");
+        sessionStorage.setItem("userAge", payload.age || "");
+        sessionStorage.setItem("userGender", payload.gender || "");
+        sessionStorage.setItem("userBio", payload.bio || "");
+      } catch (err) {
+        console.error("Token decode failed", err);
+      }
+
+      window.location.href = "/home?fromSpotify=true";
+    } else {
+      document.body.innerHTML = `<p style="color:red;">Login failed — no token found in URL.</p>`;
+    }
+  </script>
+</body>
+</html>
