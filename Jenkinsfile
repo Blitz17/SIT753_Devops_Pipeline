@@ -3,7 +3,7 @@ pipeline {
 
   environment {
     SONAR_TOKEN = credentials('sonar-token')      // SonarCloud Token (Secret Text)
-    SNYK_TOKEN = credentials('f34f2dcb-4285-4aaa-b91b-895b55526566')        // Snyk Token (Secret Text)
+    SNYK_TOKEN = credentials('snyk_key')        // Snyk Token (Secret Text)
   }
 
   stages {
@@ -55,7 +55,7 @@ pipeline {
         withEnv(["SNYK_TOKEN=${SNYK_TOKEN}"]) {
           sh '''
             npm install snyk || true
-            npx snyk auth $SNYK_TOKEN
+            echo $SNYK_TOKEN | npx snyk auth --token
             npx snyk test || true
           '''
         }
