@@ -14,7 +14,7 @@
                 return;
             }
 
-            const response = await fetch('http://localhost:3000/calculate', {
+            const response = await fetch('http://54.206.94.245:3000/calculate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ num1, num2, operation })
@@ -25,13 +25,13 @@
         }
 
         async function getHistory() {
-            const response = await fetch('http://localhost:3000/history');
+            const response = await fetch('http://54.206.94.245:3000/history');
             const data = await response.json();
             document.getElementById('history').innerText = JSON.stringify(data.History, null, 2);
         }
 
         async function clearHistory() {
-            await fetch('http://localhost:3000/history', { method: 'DELETE' });
+            await fetch('http://54.206.94.245:3000/history', { method: 'DELETE' });
             getHistory();
         }
     </script>

@@ -16,7 +16,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views/index.html'));
+    res.sendFile(path.join(__dirname, 'views/calculator.html'));
 });
 
 app.get('/metrics', (req, res) => {
@@ -26,6 +26,6 @@ app.get('/metrics', (req, res) => {
 
 app.use('/', calculatorRoutes);
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
     console.log(`[SERVER] Server running at http://localhost:${port}`);
 });

@@ -20,12 +20,6 @@ pipeline {
       }
     }
 
-    stage('Build') {
-      steps {
-        sh 'docker build -t myapp:latest .'
-      }
-    }
-
     stage('Test') {
       steps {
         sh 'npm install'
@@ -65,12 +59,15 @@ pipeline {
     stage('Deploy to EC2') {
       steps {
         sshagent (credentials: ['ec2-key']) {
+          // Rsync source code to EC2 app folder, then ssh in to build & run
           sh '''
+            rsync -r --delete -e "ssh -o StrictHostKeyChecking=no" ./ ec2-user@<EC2_PUBLIC_IP>:/home/ec2-user/app/
             ssh -o StrictHostKeyChecking=no ec2-user@<EC2_PUBLIC_IP> << EOF
               docker stop myapp || true
               docker rm myapp || true
               docker rmi myapp || true
-              docker build -t myapp:latest /home/ec2-user/app/
+              cd /home/ec2-user/app
+              docker build -t myapp:latest .
               docker run -d -p 80:3000 --name myapp myapp:latest
             EOF
           '''
@@ -88,12 +85,5 @@ pipeline {
       }
     }
 
-    steps {
-    sh '''
-      curl -X GET https://api.uptimerobot.com/v2/getMonitors \
-      -H 'Content-Type: application/x-www-form-urlencoded' \
-      -d 'api_key=YOUR_UPTIMEROBOT_API_KEY&format=json'
-    '''
-    }
   }
 }
