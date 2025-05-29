@@ -37,6 +37,7 @@ pipeline {
       steps {
         sh 'npm install'
         sh 'chmod +x ./node_modules/.bin/mocha'
+        sh 'chmod +x ./node_modules/.bin/nyc'
         sh 'npm test'
 
         junit 'test-results.xml'
