@@ -2,7 +2,7 @@ import * as chai from 'chai';
 
 const expect = chai.expect;
 
-const calculator = require('../models/calculatorModel');
+import calculator from '../models/calculatorModel.js';
 
 describe('Calculator Model Tests', () => {
 

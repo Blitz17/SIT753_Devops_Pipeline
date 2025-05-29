@@ -1,6 +1,6 @@
 const history = [];
 
-function calculate(num1, num2, operation) {
+export function calculate(num1, num2, operation) {
     console.log(`[MODEL] Performing ${operation} on ${num1} and ${num2}`);
     let result;
     switch (operation) {
@@ -24,15 +24,14 @@ function calculate(num1, num2, operation) {
     history.push(command);
     console.log(`[MODEL] Operation stored in history:`, command);
     return result;
-    }
+}
 
-    function getHistory() {
-        console.log('[MODEL] Retrieving history');
-        return history;
-    }
+export function getHistory() {
+    console.log('[MODEL] Retrieving history');
+    return history;
+}
 
-    function clearHistory() {
-        console.log('[MODEL] Clearing history');
-        history.length = 0;
-    }
-module.exports = { calculate, getHistory, clearHistory };
+export function clearHistory() {
+    console.log('[MODEL] Clearing history');
+    history.length = 0;
+}
