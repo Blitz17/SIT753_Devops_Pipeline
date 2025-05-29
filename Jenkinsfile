@@ -19,6 +19,7 @@ pipeline {
     stage('Test') {
       steps {
         sh 'npm install'
+        sh 'chmod +x ./node_modules/.bin/mocha'
         sh 'npm test'
       }
     }
