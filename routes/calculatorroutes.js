@@ -1,9 +1,10 @@
-const express = require('express');
+import express from 'express';
+import * as calculatorController from '../controllers/calculatorcontroller.js';
+
 const router = express.Router();
-const calculatorController = require('../controllers/calculatorcontroller');
 
 router.post('/calculate', calculatorController.handleCalculation);
 router.get('/history', calculatorController.getHistory);
 router.delete('/history', calculatorController.clearHistory);
 
-module.exports = router;
+export default router;

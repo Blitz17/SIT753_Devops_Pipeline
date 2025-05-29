@@ -1,9 +1,14 @@
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
+import express from 'express';
+import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import calculatorRoutes from './routes/calculatorroutes.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 const port = 3000;
-const calculatorRoutes = require('./routes/calculatorroutes');
 
 app.use(express.json());
 app.use(cors());
@@ -14,9 +19,13 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views/index.html'));
 });
 
+app.get('/metrics', (req, res) => {
+  res.set('Content-Type', client.register.contentType);
+  res.end(client.register.metrics());
+});
+
 app.use('/', calculatorRoutes);
 
 app.listen(port, () => {
     console.log(`[SERVER] Server running at http://localhost:${port}`);
 });
-

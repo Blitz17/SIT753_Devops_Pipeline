@@ -1,27 +1,99 @@
 pipeline {
   agent any
+
+  environment {
+    SONAR_TOKEN = credentials('sonar-token')              // SonarCloud Token (Secret Text)
+    SNYK_TOKEN = credentials('snyk-token')                // Snyk Token (Secret Text)
+  }
+
   stages {
+
     stage('Clean Workspace') {
       steps {
         deleteDir()
       }
     }
+
     stage('Checkout') {
       steps {
         git url: 'https://github.com/Blitz17/SIT753_Devops_Pipeline.git', branch: 'master'
       }
     }
+
     stage('Build') {
       steps {
         sh 'docker build -t myapp:latest .'
       }
     }
+
     stage('Test') {
       steps {
         sh 'npm install'
         sh 'chmod +x ./node_modules/.bin/mocha'
         sh 'npm test'
       }
+    }
+
+    stage('Code Quality') {
+      steps {
+        withEnv(["SONAR_TOKEN=${SONAR_TOKEN}"]) {
+          sh '''
+            npm install -g sonar-scanner
+            sonar-scanner \
+              -Dsonar.projectKey=blitz17_myapp \
+              -Dsonar.organization=your-org-name \
+              -Dsonar.sources=. \
+              -Dsonar.host.url=https://sonarcloud.io \
+              -Dsonar.login=$SONAR_TOKEN
+          '''
+        }
+      }
+    }
+
+    stage('Security Scan') {
+      steps {
+        withEnv(["SNYK_TOKEN=${SNYK_TOKEN}"]) {
+          sh '''
+            npm install -g snyk || true
+            snyk auth $SNYK_TOKEN
+            snyk test || true
+          '''
+        }
+      }
+    }
+
+    stage('Deploy to EC2') {
+      steps {
+        sshagent (credentials: ['ec2-key']) {
+          sh '''
+            ssh -o StrictHostKeyChecking=no ec2-user@<EC2_PUBLIC_IP> << EOF
+              docker stop myapp || true
+              docker rm myapp || true
+              docker rmi myapp || true
+              docker build -t myapp:latest /home/ec2-user/app/
+              docker run -d -p 80:3000 --name myapp myapp:latest
+            EOF
+          '''
+        }
+      }
+    }
+
+    stage('Release') {
+      steps {
+        echo 'Release step: In real-world, tag and push image or deploy to production.'
+        sh '''
+          git tag -a v1.0.$BUILD_NUMBER -m "Release version v1.0.$BUILD_NUMBER"
+          git push origin --tags
+        '''
+      }
+    }
+
+    steps {
+    sh '''
+      curl -X GET https://api.uptimerobot.com/v2/getMonitors \
+      -H 'Content-Type: application/x-www-form-urlencoded' \
+      -d 'api_key=YOUR_UPTIMEROBOT_API_KEY&format=json'
+    '''
     }
   }
 }

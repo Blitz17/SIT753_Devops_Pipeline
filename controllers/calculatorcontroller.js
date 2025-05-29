@@ -1,6 +1,6 @@
-const calculatorModel = require('../models/calculatorModel');
+import * as calculatorModel from '../models/calculatorModel.js';
 
-function handleCalculation(req, res) {
+export function handleCalculation(req, res) {
     const { num1, num2, operation } = req.body;
     console.log(`[CONTROLLER] Received calculation request: ${operation} on ${num1}, ${num2}`);
     if (num1 === undefined || num2 === undefined || !operation) {
@@ -17,15 +17,13 @@ function handleCalculation(req, res) {
     }
 }
 
-function getHistory(req, res) {
+export function getHistory(req, res) {
     console.log('[CONTROLLER] Get history request received');
     res.json({ History: calculatorModel.getHistory() });
 }
 
-function clearHistory(req, res) {
+export function clearHistory(req, res) {
     console.log('[CONTROLLER] Clear history request received');
     calculatorModel.clearHistory();
     res.json({ Message: 'History cleared' });
 }
-
-module.exports = { handleCalculation, getHistory, clearHistory };
