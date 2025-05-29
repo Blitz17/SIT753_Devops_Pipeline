@@ -4,7 +4,7 @@ pipeline {
   environment {
     SONAR_TOKEN = credentials('sonar-token')      // SonarCloud Token (Secret Text)
     SNYK_TOKEN = credentials('snyk_key')   
-    UPTIMEROBOT_API_KEY = credentials('uptimeorobot-key')   
+    UPTIMEROBOT_API_KEY = credentials('uptimerobot-key')   
   }
   stages {
 
