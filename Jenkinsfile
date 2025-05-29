@@ -50,10 +50,13 @@ pipeline {
         withEnv(["SONAR_TOKEN=${SONAR_TOKEN}"]) {
           sh '''
             npm install sonar-scanner
+            npm install
+            npm test
             npx sonar-scanner \
               -Dsonar.projectKey=Blitz17_SIT753_Devops_Pipeline \
               -Dsonar.organization=blitz17 \
               -Dsonar.sources=. \
+              -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
               -Dsonar.host.url=https://sonarcloud.io \
               -Dsonar.login=$SONAR_TOKEN
           '''

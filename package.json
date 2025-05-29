@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
-    "test": "nyc mocha --reporter mocha-junit-reporter --reporter-options mochaFile=test-results.xml"
+    "test": "nyc --reporter=lcov --reporter=text mocha --reporter mocha-junit-reporter --reporter-options mochaFile=test-results.xml"
   },
   "keywords": [],
   "author": "Dhanush",
