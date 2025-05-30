@@ -37,8 +37,8 @@ pipeline {
       steps {
         sh 'npm install'
         sh 'chmod +x ./node_modules/.bin/mocha'
-        sh 'chmod +x ./node_modules/.bin/nyc'
-        sh 'npm test'
+        sh 'chmod +x ./node_modules/.bin/c8'
+        sh './node_modules/.bin/c8 node --experimental-vm-modules ./node_modules/mocha/bin/mocha --recursive --reporter=mocha-junit-reporter --reporter-options mochaFile=test-results.xml'
 
         junit 'test-results.xml'
         sh 'cat test-results.xml'
@@ -49,17 +49,17 @@ pipeline {
       steps {
         withEnv(["SONAR_TOKEN=${SONAR_TOKEN}"]) {
           sh '''
-            npm install sonar-scanner
-            npm install
-            npm test
-            npx sonar-scanner \
-              -Dsonar.projectKey=Blitz17_SIT753_Devops_Pipeline \
-              -Dsonar.organization=blitz17 \
-              -Dsonar.sources=. \
-              -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
-              -Dsonar.host.url=https://sonarcloud.io \
-              -Dsonar.login=$SONAR_TOKEN
-          '''
+        npm install sonar-scanner
+        npm install
+        ./node_modules/.bin/c8 node --experimental-vm-modules ./node_modules/mocha/bin/mocha --recursive
+        npx sonar-scanner \
+          -Dsonar.projectKey=Blitz17_SIT753_Devops_Pipeline \
+          -Dsonar.organization=blitz17 \
+          -Dsonar.sources=. \
+          -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.login=$SONAR_TOKEN
+      '''
         }
       }
     }

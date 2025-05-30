@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="0.023" tests="8" failures="0">
+  <testsuite name="Root Suite" timestamp="2025-05-30T00:13:27" tests="0" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Calculator Model Tests" timestamp="2025-05-30T00:13:27" tests="0" file="D:\Deakin\SIT753\DevOps Pipeline\test\calculator.test.js" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="calculate()" timestamp="2025-05-30T00:13:27" tests="6" file="D:\Deakin\SIT753\DevOps Pipeline\test\calculator.test.js" time="0.015" failures="0">
+    <testcase name="Calculator Model Tests calculate() should add two numbers" time="0.002" classname="should add two numbers">
+    </testcase>
+    <testcase name="Calculator Model Tests calculate() should subtract two numbers" time="0.001" classname="should subtract two numbers">
+    </testcase>
+    <testcase name="Calculator Model Tests calculate() should multiply two numbers" time="0.000" classname="should multiply two numbers">
+    </testcase>
+    <testcase name="Calculator Model Tests calculate() should divide two numbers" time="0.001" classname="should divide two numbers">
+    </testcase>
+    <testcase name="Calculator Model Tests calculate() should throw an error when dividing by zero" time="0.002" classname="should throw an error when dividing by zero">
+    </testcase>
+    <testcase name="Calculator Model Tests calculate() should throw an error for invalid operations" time="0.001" classname="should throw an error for invalid operations">
+    </testcase>
+  </testsuite>
+  <testsuite name="getHistory()" timestamp="2025-05-30T00:13:27" tests="1" file="D:\Deakin\SIT753\DevOps Pipeline\test\calculator.test.js" time="0.004" failures="0">
+    <testcase name="Calculator Model Tests getHistory() should return history after operations" time="0.003" classname="should return history after operations">
+    </testcase>
+  </testsuite>
+  <testsuite name="clearHistory()" timestamp="2025-05-30T00:13:27" tests="1" file="D:\Deakin\SIT753\DevOps Pipeline\test\calculator.test.js" time="0.001" failures="0">
+    <testcase name="Calculator Model Tests clearHistory() should clear the history array" time="0.001" classname="should clear the history array">
+    </testcase>
+  </testsuite>
+</testsuites>
